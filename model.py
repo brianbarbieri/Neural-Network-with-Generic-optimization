@@ -87,6 +87,9 @@ def main(x, y, generations=5, best=5, start_population=5):
         pop_mean = np.mean([bindu.calc_cost(x, y) for bindu in best_induviduals])
         print(f"Gen {i+1},  fitness RMSE is {pop_mean}")
         population = new_generation(best_induviduals) 
+    score = best_induviduals[0].calc_cost(x,y)
+    print(f"Finished generic optimization algorithm, best obtained model achieved a training RMSE of {score}")
+    
 
 if __name__ == "__main__":
     #read in the data
