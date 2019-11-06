@@ -95,4 +95,4 @@ if __name__ == "__main__":
     x = np.rot90(x)
     y = df["y"].values
 
-    main(x, y,generations=20)
+    main(x, y, generations=20)
