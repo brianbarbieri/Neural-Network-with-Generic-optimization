@@ -4,6 +4,7 @@ import pandas as pd
 import random
 from itertools import permutations 
 import matplotlib.pyplot as plt
+from sklearn.metrics import f1_score
 
 class Individual:
     def __init__(self, w1=None, w2=None, b1=None, b2=None):
@@ -38,9 +39,9 @@ class Individual:
         return yhat
     
     def calc_cost(self, x, y):
-        y_hat =  self.network(x)
-        return RMSE(y, y_hat)
-    
+        y_hat =  np.round(self.network(x)) ##round to 0 or 1 to get class
+        return f1_score(y, y_hat.flatten(), average="macro")
+
     def reproduce(self, other_ind, children=2):
         
         def mutate(char):
@@ -77,15 +78,12 @@ def new_generation(best_indus):
         new_pop += indu1.reproduce(indu2, 5)
     return new_pop
 
-def RMSE(y, y_hat):
-    return np.sqrt((np.sum((y-y_hat)**2)/y.shape[0]))
-
-def main(x, y, generations=5, best=5, start_population=5):
+def main(generations=5, best=5, start_population=5):
     population = [Individual() for _ in range(start_population)]
     for i in range(generations):
         best_induviduals = get_top(population, x, y, best=5)
         pop_mean = np.mean([bindu.calc_cost(x, y) for bindu in best_induviduals])
-        print(f"Gen {i+1},  fitness RMSE is {pop_mean}")
+        print(f"Gen {i+1}, fitness F1-score is {pop_mean}")
         population = new_generation(best_induviduals) 
     score = best_induviduals[0].calc_cost(x,y)
     print(f"Finished generic optimization algorithm, best obtained model achieved a training RMSE of {score}")
