@@ -26,12 +26,12 @@ class Individual:
             
     def network(self, x):
         
-        def sigmoid(z):
-            return 1/(1+np.exp(-z))
+        def relu(z):
+            return np.maximum(0, z)
 
         def layer(w, x, b): 
             z = np.dot(w, x) + b
-            return sigmoid(z)
+            return relu(z)
         
         a = layer(self.w1, x, self.b1)
         yhat = layer(self.w2, a, self.b2)
