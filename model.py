@@ -41,7 +41,7 @@ class Individual:
     def calc_cost(self, x, y):
         y_hat =  np.round(self.network(x)) ##round to 0 or 1 to get class
         return f1_score(y, y_hat.flatten(), average="macro")
-
+    
     def reproduce(self, other_ind, children=2):
         
         def mutate(char):
@@ -67,8 +67,7 @@ class Individual:
         return kids
 
 def get_top(pop, x, y, best=5):
-    y_hats = [ind.network(x) for ind in pop]
-    cost_of_pop = [RMSE(y, y_hat) for y_hat in y_hats]
+    cost_of_pop = [1-ind.calc_cost(x, y) for ind in pop]
     return np.take(pop, np.argsort(cost_of_pop)[:best])
 
 def new_generation(best_indus):
@@ -78,7 +77,8 @@ def new_generation(best_indus):
         new_pop += indu1.reproduce(indu2, 5)
     return new_pop
 
-def main(generations=5, best=5, start_population=5):
+
+def main(x, y, generations=5, best=5, start_population=5):
     population = [Individual() for _ in range(start_population)]
     for i in range(generations):
         best_induviduals = get_top(population, x, y, best=5)
@@ -86,7 +86,7 @@ def main(generations=5, best=5, start_population=5):
         print(f"Gen {i+1}, fitness F1-score is {pop_mean}")
         population = new_generation(best_induviduals) 
     score = best_induviduals[0].calc_cost(x,y)
-    print(f"Finished generic optimization algorithm, best obtained model achieved a training RMSE of {score}")
+    print(f"Finished generic optimization algorithm, best obtained model achieved a training F1-score of {score}")
     
 
 if __name__ == "__main__":
